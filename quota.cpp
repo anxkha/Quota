@@ -370,7 +370,7 @@ int _tmain( int argc, TCHAR** argv )
 	}
 
 	// Print out table header.
-	_tprintf( TEXT("%15s%20s%10s  Directory\n"), "Size (b)", "Size on Disk (b)", "Files" );
+	_tprintf( TEXT("%15s%20s%10s  Directory\n"), TEXT("Size (b)"), TEXT("Size on Disk (b)"), TEXT("Files") );
 
 	// Start walking the tree and calculating the sizes.
 	ParseDirectory( argv[1] );
