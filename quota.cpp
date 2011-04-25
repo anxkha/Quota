@@ -16,14 +16,14 @@ QWORD	g_nDepth			= 0;
 QWORD	g_nTemp1			= 0;
 QWORD	g_nTemp2			= 0;
 QWORD	g_nTemp3			= 0;
-bool	g_bError			= false;
+BOOL	g_bError			= false;
 
 // ----------------------------------------------------------------------------
 //  Name: PrintValue
 //
 //  Desc: Prints a right-justified integer with commas to the console.
 // ----------------------------------------------------------------------------
-void PrintValue( QWORD Value, TCHAR* width )
+void PrintValue( QWORD Value, PTCHAR width )
 {
 	TCHAR		inValue[50];
 	TCHAR		outValue[50];
