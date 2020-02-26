@@ -1,12 +1,12 @@
 Quota
 ---
 
-Quota is a free utility to explore the actual space usage of a specific directory and its sub-directories. While it does not display the entire tree of the evaluated directory, it does walk the entire directory tree to evaluate space usage of all sub-directories and files.
+Quota is a utility to explore the actual space usage of a specific directory and its sub-directories. While it does not display the entire tree of the evaluated directory, it does walk the entire directory tree to evaluate space usage of all sub-directories and files.
 
 License
 ---
 Quota is open source software, licensed under the terms of BSD license.
-See [LICENSE.txt](LICENSE.txt) for details.
+See LICENSE.txt for details.
 
 
 How to build
