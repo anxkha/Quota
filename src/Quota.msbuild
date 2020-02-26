@@ -1,0 +1,38 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="BuildArtifacts" ToolsVersion="16.0">
+	
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<Project Include="Quota.sln" />
+	</ItemGroup>
+  
+	<Target Name="Clean">
+		<MSBuild Projects="@(Project)" Targets="Clean"/>
+		<RemoveDir Directories=".\Artifacts" />
+	</Target>
+  
+	<Target Name="Build">
+		<MSBuild
+			Properties="Configuration=$(Configuration);Platform=x86"
+			Projects="@(Project)"
+			Targets="Build" />
+			
+		<MSBuild
+			Properties="Configuration=$(Configuration);Platform=x64"
+			Projects="@(Project)"
+			Targets="Build" />
+	</Target>
+
+	<Target Name="BuildArtifacts" DependsOnTargets="Clean;Build">
+		<ItemGroup>
+			<x86 Include=".\Quota\bin\Win32\$(Configuration)\Quota.exe" />
+			<x64 Include=".\Quota\bin\x64\$(Configuration)\Quota.exe" />
+		</ItemGroup>
+		
+		<Copy SourceFiles="@(x86)" DestinationFiles="@(x86->'.\Artifacts\x86\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(x64)" DestinationFiles="@(x64->'.\Artifacts\x64\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
+	
+</Project>
