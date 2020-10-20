@@ -5,19 +5,19 @@ constexpr int ErrorCommandLine = -1;
 constexpr int ErrorClusterSize = -2;
 constexpr int ErrorOther = -3;
 
-typedef unsigned _int64 QWORD;
+typedef unsigned _int64 uint64_t;
 
-QWORD g_nClusterSize = 4096;
-QWORD g_nTotalSize = 0;
-QWORD g_nTotalSizeOnDisk = 0;
-QWORD g_nTotalCount = 0;
-QWORD g_nDepth = 0;
-QWORD g_nTemp1 = 0;
-QWORD g_nTemp2 = 0;
-QWORD g_nTemp3 = 0;
+uint64_t g_nClusterSize = 4096;
+uint64_t g_nTotalSize = 0;
+uint64_t g_nTotalSizeOnDisk = 0;
+uint64_t g_nTotalCount = 0;
+uint64_t g_nDepth = 0;
+uint64_t g_nTemp1 = 0;
+uint64_t g_nTemp2 = 0;
+uint64_t g_nTemp3 = 0;
 BOOL g_bError = false;
 
-void PrintValue(QWORD, const wchar_t*);
+void PrintValue(uint64_t, const wchar_t*);
 void ParseDirectory(wchar_t*);
 void ParseDirectorySilent(wchar_t*);
 
@@ -86,7 +86,7 @@ void ParseDirectory(wchar_t* sPath)
 	wchar_t szDir[MAX_PATH];
 	wchar_t szNextDir[MAX_PATH];
 	HANDLE hFind = INVALID_HANDLE_VALUE;
-	QWORD nFileSize, nFileSizeTotal, nFileCount, temp;
+	uint64_t nFileSize, nFileSizeTotal, nFileCount, temp;
 
 	StringCchLengthW(sPath, MAX_PATH, &PathLength);
 	if (PathLength > (MAX_PATH - 3))
@@ -103,8 +103,7 @@ void ParseDirectory(wchar_t* sPath)
 	hFind = FindFirstFileW(szDir, &fd);
 	if (INVALID_HANDLE_VALUE == hFind)
 	{
-		fwprintf(stderr, L"Cannot access the path, %s\n", sPath);
-		fwprintf(stderr, L"The directory does not exist or you do not have permission to view the contents of said directory.\n");
+		fwprintf(stderr, L"Cannot access the path, '%s'. It does not exist or you do not have permissions.\n", sPath);
 
 		g_bError = true;
 		return;
@@ -232,7 +231,7 @@ void ParseDirectorySilent(wchar_t* sPath)
 	wchar_t szDir[MAX_PATH];
 	wchar_t szNextDir[MAX_PATH];
 	HANDLE hFind = INVALID_HANDLE_VALUE;
-	QWORD nFileSize, nFileSizeTotal, nFileCount, temp;
+	uint64_t nFileSize, nFileSizeTotal, nFileCount, temp;
 
 	// Check the length of the path. It plus \* and a null char must be less
 	// than MAX_PATH.
@@ -253,8 +252,7 @@ void ParseDirectorySilent(wchar_t* sPath)
 	hFind = FindFirstFileW(szDir, &fd);
 	if (INVALID_HANDLE_VALUE == hFind)
 	{
-		fwprintf(stderr, L"Cannot access the path, %s\n", sPath);
-		fwprintf(stderr, L"The directory does not exist or you do not have permission to view the contents of said directory.\n");
+		fwprintf(stderr, L"Cannot access the path, '%s'. It does not exist or you do not have permissions.\n", sPath);
 
 		g_bError = true;
 		return;
@@ -340,19 +338,21 @@ void ParseDirectorySilent(wchar_t* sPath)
 // --------------------------------------------------------------------------------------------------------------------
 //  Prints a right-justified integer with commas to the console.
 // --------------------------------------------------------------------------------------------------------------------
-void PrintValue(QWORD value, const wchar_t* widthString)
+void PrintValue(uint64_t value, const wchar_t* widthString)
 {
-	wchar_t inValue[50];
-	wchar_t outValue[50];
+	constexpr int bufferSize = 50;
+
+	wchar_t inValue[bufferSize];
+	wchar_t outValue[bufferSize];
 	NUMBERFMT format;
 
 	// Make sure our structures our clean.
-	memset(&format, 0, sizeof(format));
-	memset(inValue, 0, sizeof(inValue));
-	memset(outValue, 0, sizeof(outValue));
+	memset(&format, 0, sizeof(NUMBERFMT));
+	memset(inValue, 0, sizeof(wchar_t) * bufferSize);
+	memset(outValue, 0, sizeof(wchar_t) * bufferSize);
 
 	// Convert the value to a string for conversion.
-	_i64tow_s(value, inValue, (sizeof(inValue)), 10);
+	_i64tow_s(value, inValue, bufferSize, 10);
 
 	// Set up the format structure.
 	format.NumDigits = 0;	// No decimal values.
@@ -363,7 +363,7 @@ void PrintValue(QWORD value, const wchar_t* widthString)
 	format.NegativeOrder = 1;	// Doesn't matter for this.
 	
 	// Create the number formatting.
-	GetNumberFormatW(LOCALE_USER_DEFAULT, 0, inValue, &format, outValue, 50);
+	GetNumberFormatW(LOCALE_USER_DEFAULT, 0, inValue, &format, outValue, bufferSize);
 
 	wprintf(widthString, outValue);
 }
